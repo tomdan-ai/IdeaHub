@@ -13,14 +13,26 @@ class UsersController < ApplicationController
       render json: @user
     end
   
-    # POST /users
+    # POST /users(User Registration)
     def create
       @user = User.new(user_params)
   
       if @user.save
-        render json: @user, status: :created
+        token = JwtService.encode(user_id: @user.id)
+        render json: { token: token }, status: :created
       else
-        render json: @user.errors, status: :unprocessable_entity
+        render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
+
+    #POST /login (User Login)
+    def login
+      @user = User.find_by(email: params[:email])
+      if @user && @user.authenticate(params[:password])
+        token = JwtService.encode(user_id: @user.id)
+        render json: { token: token }, status: :ok
+      else 
+        render json: { error: 'Invalid Email or Password Bruh💀' }, status: :unauthorized
       end
     end
   
@@ -44,16 +56,6 @@ class UsersController < ApplicationController
     def set_user
       @user = User.find(params[:id])
     end
-  
-    swagger_controller :users, 'User Management'
-
-  swagger_api :index do
-    summary 'Fetches all users'
-    notes 'This lists all the users'
-    param :query, :page, :integer, :optional, 'Page number'
-    param :query, :per_page, :integer, :optional, 'Per page'
-    response :ok
-  end
 
     def user_params
       params.require(:user).permit(:username, :email, :password, :profile_picture, :bio)
