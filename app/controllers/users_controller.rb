@@ -38,6 +38,9 @@ class UsersController < ApplicationController
 
     # PATCH/PUT /users/1
     def update
+      authorize @user
+
+
       if @user.update(user_params)
         render json: @user
       else
