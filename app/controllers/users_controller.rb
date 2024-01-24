@@ -48,11 +48,42 @@ class UsersController < ApplicationController
       end
     end
 
+
+    def update_profile
+      @user = current_user
+      # Rest of your code...
+    end
+    
     # DELETE /users/1
     def destroy
       @user.destroy
       render json: { message: 'User deleted successfully' }
     end
+
+     # Update user profile
+  def update_profile
+    @user = current_user
+    authorize @user
+
+    if @user.update(profile_params)
+      render json: @user
+    else
+      render json: @user.errors, status: :unprocessable_entity
+    end
+  end
+
+  # Update user password
+  def update_password
+    @user = current_user
+    authorize @user
+
+    if @user.authenticate(params[:current_password]) && @user.update(password_params)
+      render json: @user
+    else
+      render json: { error: 'Current password is incorrect' }, status: :unprocessable_entity
+    end
+  end
+
 
     private
 
@@ -63,6 +94,14 @@ class UsersController < ApplicationController
 
     def user_params
       params.require(:user).permit(:username, :email, :password, :profile_picture, :bio)
+    end
+
+    def profile_params
+      params.require(:user).permit(:username, :email, :bio, :profile_picture)
+    end
+
+    def password_params
+      params.require(:user).permit(:password, :password_confirmation)
     end
 
 
