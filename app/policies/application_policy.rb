@@ -8,6 +8,9 @@ class ApplicationPolicy
     @record = record
   end
 
+  alias_method :update_profile?, :update?
+  alias_method :update_password?, :update?
+
   def index?
     false
   end
