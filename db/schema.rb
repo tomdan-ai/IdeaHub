@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_30_065034) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_20_085925) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "account_managers", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "admin_dashboards", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "articles", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -21,6 +31,11 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_30_065034) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_articles_on_user_id"
+  end
+
+  create_table "author_dashboards", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "categories", force: :cascade do |t|
@@ -49,6 +64,11 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_30_065034) do
     t.index ["article_id"], name: "index_reactions_on_article_id"
     t.index ["comment_id"], name: "index_reactions_on_comment_id"
     t.index ["user_id"], name: "index_reactions_on_user_id"
+  end
+
+  create_table "reports", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
